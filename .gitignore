@@ -1,0 +1,20 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# FastAPI Generated Files
+stitch_engine/uploads/*
+stitch_engine/results/*
+
+!stitch_engine/uploads/.gitkeep
+!stitch_engine/results/.gitkeep
+
+# Node
+node_modules/
+
+# Environment Variables
+.env
+
+# VS Code
+.vscode/
