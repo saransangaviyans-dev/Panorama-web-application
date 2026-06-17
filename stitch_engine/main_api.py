@@ -1,3 +1,5 @@
+from importlib.resources import files
+
 import cv2
 from fastapi import FastAPI, UploadFile, File
 import os
@@ -52,28 +54,37 @@ def stitch_test():
     }
 
 
+from typing import List
+
 @app.post("/stitch")
 async def stitch(
-    file1: UploadFile = File(...),
-    file2: UploadFile = File(...)
-):
+    files: List[UploadFile] = File(...)
+):  
+    paths = []
 
-    os.makedirs(
-        "uploads",
-        exist_ok=True
-    )
+    if len(files) < 2:
 
-    path1 = os.path.join("uploads",file1.filename)
-    path2 = os.path.join("uploads",file2.filename)
+        return {
+        "status": "error",
+        "message":
+        "At least 2 images are required"
+    }
 
-    with open(path1,"wb") as buffer:
-        shutil.copyfileobj(file1.file,buffer)
+    for file in files:
 
-    with open(path2,"wb") as buffer:
-        shutil.copyfileobj(file2.file,buffer)
+        path = os.path.join(
+            "uploads",
+            file.filename
+        )
 
-    paths =[path1,path2]
+        with open(path, "wb") as buffer:
 
+            shutil.copyfileobj(
+                file.file,
+                buffer
+            )
+
+        paths.append(path)
     try:
 
         result = stitch_images(paths)
@@ -81,8 +92,8 @@ async def stitch(
     except Exception as e:
 
         return {
-            "status" : "error",
-            "message" : str(e)
+            "status": "error",
+             "message": "Images do not contain enough overlap"
         }
 
     finally:
@@ -114,7 +125,7 @@ async def stitch(
     
     return {
      "status": result["status"],
-    "image_url": f"/results/{filename}",
+    "image_url": f"http://127.0.0.1:8000/results/{filename}",
     "images_used": result["images_used"],
     "execution_time": result["execution_time"]
     }
