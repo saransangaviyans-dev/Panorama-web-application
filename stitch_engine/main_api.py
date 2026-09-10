@@ -125,6 +125,7 @@ async def stitch(
     
     return {
      "status": result["status"],
+     "filename" : filename,
     "image_url": f"http://127.0.0.1:8000/results/{filename}",
     "images_used": result["images_used"],
     "execution_time": result["execution_time"]

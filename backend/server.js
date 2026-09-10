@@ -1,7 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const stitchRoutes = require("./routes/stitchRoutes");
+const connectDB = require("./config/db");
 const app = express();
 
 app.use(cors());
@@ -25,6 +27,8 @@ app.get("/test_fastapi", async (req, res) => {
 });
 
 app.use("/api", stitchRoutes);
+
+connectDB();
 
 app.listen(5000, () => {
   console.log("Server running on port http://localhost:5000");
